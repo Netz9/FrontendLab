@@ -76,6 +76,8 @@ import EgresosParent from '../views/App/Caja/Egresos/EgresosParent'
 
 import AlumnosList from '../views/App/Alumnos/alumnoList'
 
+import VehiculoList from '../views/App/Vehiculos/vehiculosList'
+
 Vue.use(VueRouter)
 
 const AdminRoutes = (prop, mode) => [
@@ -129,6 +131,15 @@ const AlumnoRoutes = (prop, mode) => [
     name: prop + '.egresos',
     meta: { dark: mode, auth: true, name: 'egresos' },
     component: EgresosParent
+  }
+]
+
+const VehiculoRoutes = (prop, mode) => [
+  {
+    path: 'vehiculo',
+    name: prop + '.vehiculos',
+    meta: { dark: mode, auth: true, name: 'vehiculos' },
+    component: VehiculoList
   }
 ]
 
@@ -461,6 +472,13 @@ const routes = [
     component: Layout1,
     meta: { auth: true },
     children: AlumnoRoutes('alumno')
+  },
+  {
+    path: '/vehiculo',
+    name: 'vehiculo',
+    component: Layout1,
+    meta: { auth: true },
+    children: VehiculoRoutes('vehiculo')
   },
   {
     path: '/',
