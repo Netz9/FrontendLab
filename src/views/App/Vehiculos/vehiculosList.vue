@@ -1,6 +1,6 @@
 <template>
     <b-container fluid>
-      <b-modal id="modal-1" ref="modal-1" size="xl" title="Nuevo Alumno">
+      <b-modal id="modal-1" ref="modal-1" size="xl" title="Nuevo Vehiculo">
         <form>
           <div class="col-md-12 mb-3">
             <label for="nit">Nit</label>
@@ -37,14 +37,33 @@
             >
           </div>
           <div class="col-md-12 mb-3">
-            <label for="tipo">Tipo</label>
+            <label for="tipoplaca">Seleccione el tipo de placa</label>
+            <select id="tipoplaca" class="form-control" v-model="selectedOption">
+              <option v-for="option in datosPostPlaca" :value="option.id" :key="option.id">
+                  {{ option.tipo }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-12 mb-3">
+            <label for="placa">Placa</label>
             <input
               required
               class="form-control"
-              id="tipo"
-              v-model.trim="$v.form.tipo.$model"
-              :state="!$v.form.tipo.$error"
-              placeholder="Ingresar el Tipo del vehiculo"
+              id="placa"
+              v-model.trim="$v.form.placa.$model"
+              :state="!$v.form.placa.$error"
+              placeholder="Ingresar placa del vehiculo"
+            >
+          </div>
+          <div class="col-md-12 mb-3">
+            <label for="tipovehiculo">Tipo de Vehiculo</label>
+            <input
+              required
+              class="form-control"
+              id="tipovehiculo"
+              v-model.trim="$v.form.tipovehiculo.$model"
+              :state="!$v.form.tipovehiculo.$error"
+              placeholder="Ingresar tipo de vehiculo"
             >
           </div>
           <div class="col-md-12 mb-3">
@@ -78,17 +97,6 @@
               v-model.trim="$v.form.modelo.$model"
               :state="!$v.form.modelo.$error"
               placeholder="Ingresar Modelo del vehiculo"
-            >
-          </div>
-          <div class="col-md-12 mb-3">
-            <label for="placa">Placa</label>
-            <input
-              required
-              class="form-control"
-              id="placa"
-              v-model.trim="$v.form.placa.$model"
-              :state="!$v.form.placa.$error"
-              placeholder="Ingresar placa del vehiculo"
             >
           </div>
           <div class="col-md-12 mb-3">
@@ -168,13 +176,31 @@
             >
           </div>
           <div class="col-md-12 mb-3">
-            <label for="tipo">Tipo</label>
+            <label for="tipoplaca">Seleccione el tipo de placa</label>
+            <select id="tipoplaca" class="form-control" v-model="form.tipoplaca">
+              <option v-for="option in datosPostPlaca" :value="option.tipo" :key="option.id">
+                {{ option.tipo }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-12 mb-3">
+            <label for="placa">Placa</label>
             <input
               required
               class="form-control"
-              id="tipo"
-              v-model.trim="$v.form.tipo.$model"
-              :state="!$v.form.tipo.$error"
+              id="placa"
+              v-model.trim="$v.form.placa.$model"
+              :state="!$v.form.placa.$error"
+            >
+          </div>
+          <div class="col-md-12 mb-3">
+            <label for="tipovehiculo">Tipo de vehiculo</label>
+            <input
+              required
+              class="form-control"
+              id="tipovehiculo"
+              v-model.trim="$v.form.tipovehiculo.$model"
+              :state="!$v.form.tipovehiculo.$error"
             >
           </div>
           <div class="col-md-12 mb-3">
@@ -205,16 +231,6 @@
               id="modelo"
               v-model.trim="$v.form.modelo.$model"
               :state="!$v.form.modelo.$error"
-            >
-          </div>
-          <div class="col-md-12 mb-3">
-            <label for="placa">Placa</label>
-            <input
-              required
-              class="form-control"
-              id="placa"
-              v-model.trim="$v.form.placa.$model"
-              :state="!$v.form.placa.$error"
             >
           </div>
           <div class="col-md-12 mb-3">
@@ -328,7 +344,13 @@
                           Nombre
                       </th>
                       <th>
-                          Tipo
+                          Tipo de placa
+                      </th>
+                      <th>
+                          Placa
+                      </th>
+                      <th>
+                          TipoPlaca
                       </th>
                       <th>
                           Marca
@@ -338,9 +360,6 @@
                       </th>
                       <th>
                           Modelo
-                      </th>
-                      <th>
-                          Placa
                       </th>
                       <th>
                           Vin
@@ -360,11 +379,12 @@
                           <td v-text="datos.nitPropietario"></td>
                           <td v-text="datos.cuiPropietario"></td>
                           <td v-text="datos.nombrePropietario"></td>
-                          <td v-text="datos.tipo"></td>
+                          <td v-text="datos.tipoplaca"></td>
+                          <td v-text="datos.placa"></td>
+                          <td v-text="datos.tipovehiculo"></td>
                           <td v-text="datos.marca"></td>
                           <td v-text="datos.linea"></td>
                           <td v-text="datos.modelo"></td>
-                          <td v-text="datos.placa"></td>
                           <td v-text="datos.vin"></td>
                           <td v-text="datos.chasis"></td>
                           <td v-text="datos.color"></td>
@@ -400,6 +420,8 @@ export default {
     axios.get(apiUrl + '/type/get').then((response) => {
       this.typeOptions = response.data
     })
+    this.getTipoPlacaName()
+    this.getPlacaDatos()
     this.getDatos()
     console.log('Aqui ya esta montado el componente')
     },
@@ -417,23 +439,34 @@ export default {
         total: 0,
         perPage: 5,
         search: '',
+        datosPostPlaca: [],
+        selectedOption: null, 
         datosPosts: [],
         form: {
           id: 0,
           nitPropietario: '',
           cuiPropietario: '',
           nombrePropietario: '',
-          tipo: '',
+          tipoplaca: null, 
+          tipoPlaca_id: null, 
+          placa: '',
+          tipovehiculo: '',
           marca: '',
           linea: '',
           modelo: '',
-          placa: '',
           vin: '',
           chasis: '',
           color: ''
         },
         apiBase: laravelUrl + '/api/vehiculo/get/',
+        apiBasePlaca: laravelUrl + '/api/tipoplaca/get/',
         typeOptions: [],
+        watch: {
+          selectedOption(newValue) {
+          this.form.tipoplaca = newValue;
+          this.form.tipoPlaca_id = newValue;
+        },
+        },
         options: [
           { value: '1', nombre: 'Nombre' },
           { value: '2', nombre: 'Universidad' },
@@ -475,18 +508,32 @@ export default {
           nitPropietario: { required },
           cuiPropietario: { required },
           nombrePropietario: { required },
-          tipo: { required },
+          tipoplaca: { required },
+          placa: { required },
+          tipovehiculo: { required },
           marca: { required },
           linea: { required },
           modelo: { required },
-          placa: { required },
           vin: { required },
           chasis: { required },
           color: { required }
         }
       }
     },
+    created() {
+        this.selectedOption = this.form.tipoplaca;
+    },
     methods: {
+      getTipoPlacaName(tipoPlaca_id) {
+        const tipoPlaca = this.datosPostPlaca.find(option => option.id === tipoPlaca_id);
+        return tipoPlaca ? tipoPlaca.tipo : ''; 
+      },
+      getPlacaDatos () {
+        axios.get(laravelUrl + '/api/tipoplaca/get').then((response) => {
+          this.datosPostPlaca = response.data
+          console.log(this.datosPostPlaca)
+        })
+      },
       getDatos () {
         axios.get(laravelUrl + '/api/vehiculo/get').then((response) => {
           this.datosPosts = response.data
@@ -513,14 +560,16 @@ export default {
             this.form.nitPropietario = ''
             this.form.cuiPropietario = ''
             this.form.nombrePropietario = ''
-            this.form.tipo = ''
+            this.form.tipoplaca = null;
+            this.form.placa = ''
+            this.form.tipovehiculo = ''
             this.form.marca = ''
             this.form.linea = ''
             this.form.modelo = ''
-            this.form.placa = ''
             this.form.vin = ''
             this.form.chasis = ''
             this.form.color = ''
+            this.$refs['modal-1'].show()
             break
           }
           case 'update': {
@@ -530,11 +579,12 @@ export default {
               this.form.nitPropietario = datoAEditar.nitPropietario
               this.form.cuiPropietario = datoAEditar.cuiPropietario
               this.form.nombrePropietario = datoAEditar.nombrePropietario
-              this.form.tipo = datoAEditar.tipo
+              this.form.tipoplaca = datoAEditar.tipoplaca;
+              this.form.placa = datoAEditar.placa
+              this.form.tipovehiculo = datoAEditar.tipovehiculo
               this.form.marca = datoAEditar.marca
               this.form.linea = datoAEditar.linea
               this.form.modelo = datoAEditar.modelo
-              this.form.placa = datoAEditar.placa
               this.form.vin = datoAEditar.vin
               this.form.chasis = datoAEditar.chasis
               this.form.color = datoAEditar.color
@@ -613,32 +663,39 @@ export default {
         this.form.id = data.id
       },
       /* Guardar */
-      onSave () {
-        const me = this
-        axios.post(laravelUrl + '/api/vehiculo/create/', {
-          nitPropietario: me.form.nitPropietario,
-          cuiPropietario: me.form.cuiPropietario,
-          nombrePropietario: me.form.nombrePropietario,
-          tipo: me.form.tipo,
-          marca: me.form.marca,
-          linea: me.form.linea,
-          modelo: me.form.modelo,
-          placa: me.form.placa,
-          vin: me.form.vin,
-          chasis: me.form.chasis,
-          color: me.form.color,
-          estadoActivo: 1
+      onSave() {
+        const selectedOption = this.selectedOption; 
+        const selectedText = this.datosPostPlaca.find(option => option.id === selectedOption)?.tipo; 
+        this.tipoplaca = selectedText;
+        this.tipoPlaca_id = selectedOption; 
+        console.log('ID seleccionado:', this.tipoPlaca_id);
+        console.log('Texto seleccionado:', this.tipoplaca);
+        const me = this;
+        axios
+          .post(laravelUrl + '/api/vehiculo/create/', {
+            nitPropietario: me.form.nitPropietario,
+            cuiPropietario: me.form.cuiPropietario,
+            nombrePropietario: me.form.nombrePropietario,
+            tipoplaca: me.tipoplaca,
+            tipoPlaca_id: me.tipoPlaca_id,
+            placa: me.form.placa,
+            tipovehiculo: me.form.tipovehiculo,
+            marca: me.form.marca,
+            linea: me.form.linea,
+            modelo: me.form.modelo,
+            vin: me.form.vin,
+            chasis: me.form.chasis,
+            color: me.form.color,
+            estadoActivo: 1
           })
           .then((response) => {
-            me.getDatos()
-            me.closeModal('save')
+            me.getDatos();
+            me.closeModal('save');
           })
           .catch((error) => {
-            // this.errorMessage = error.message;
-            console.error('Error!', error)
-          })
+            console.error('Error!', error);
+          });
       },
-      /* Guardar */
       onUpdate () {
         const me = this
         axios.put(apiUrl + '/user/update', {
@@ -651,29 +708,30 @@ export default {
             console.error('Error!', error)
           })
       },
-      onState () {
-        const me = this
+      onState() {
+        const me = this;
         axios.put(laravelUrl + '/api/vehiculo/update/' + this.form.id, {
           nitPropietario: me.form.nitPropietario,
           cuiPropietario: me.form.cuiPropietario,
           nombrePropietario: me.form.nombrePropietario,
-          tipo: me.form.tipo,
+          tipoplaca: me.form.tipoplaca,
+          placa: me.form.placa,
+          tipovehiculo: me.form.tipovehiculo,
           marca: me.form.marca,
           linea: me.form.linea,
           modelo: me.form.modelo,
-          placa: me.form.placa,
           vin: me.form.vin,
           chasis: me.form.chasis,
           color: me.form.color,
-          estadoActivo: 1  })
-          .then((response) => {
-            me.getDatos()
-            me.closeModal('update')
-          })
-          .catch((error) => {
-            // this.errorMessage = error.message;
-            console.error('Error!', error)
-          })
+          estadoActivo: 1
+        })
+        .then((response) => {
+          me.getDatos();
+          me.closeModal('update');
+        })
+        .catch((error) => {
+          console.error('Error!', error);
+        });
       },
       DeleteData () {
         const me = this
