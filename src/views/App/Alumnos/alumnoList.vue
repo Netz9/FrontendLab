@@ -158,7 +158,7 @@
               </div>
             </template>
             <template v-slot:headerAction>
-            <b-button variant="primary"  v-b-modal.modal-1>AGREGAR NUEVO</b-button>
+            <b-button variant="primary"  modal.modal-1>AGREGAR NUEVO</b-button>
           </template>
           <template v-slot:body>
             <table class="table table-striped custom-table mb-0">

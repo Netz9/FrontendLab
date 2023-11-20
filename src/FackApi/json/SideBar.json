@@ -43,5 +43,17 @@
     "link": {
       "name" : "vehiculo.vehiculos"
     }
+  },
+  {
+    "title": "Tareas",
+    "name": "Tareas",
+    "is_heading": false,
+    "is_active": false,
+    "class_name": "",
+    "is_icon_class": true,
+    "icon": "fas fa-tasks",
+    "link": {
+      "name" : "tarea.tareas"
+    }
   }
 ]

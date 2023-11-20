@@ -316,17 +316,7 @@
         <b-col md="12">
           <iq-card>
               <template v-slot:headerTitle>
-                <h4 class="card-title mt-3">Alumnos</h4>
-                <div class="iq-search-bar mt-2">
-                  <div class="row">
-                    <div class="col-sm">
-                      <b-form action="#" class="searchbox">
-                          <b-input id="search" placeholder="Buscar..." @input="(val) => searchChange(val)" />
-                          <a class="search-link" href="#"><i class="ri-search-line"></i></a>
-                      </b-form>
-                    </div>
-                  </div>
-                </div>
+                <h4 class="card-title mt-3">Vehiculos</h4>
               </template>
               <template v-slot:headerAction>
               <b-button variant="primary"  v-b-modal.modal-1>AGREGAR NUEVO</b-button>

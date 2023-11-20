@@ -78,6 +78,8 @@ import AlumnosList from '../views/App/Alumnos/alumnoList'
 
 import VehiculoList from '../views/App/Vehiculos/vehiculosList'
 
+import TareasList from '../views/App/Tareas/Tareas'
+
 Vue.use(VueRouter)
 
 const AdminRoutes = (prop, mode) => [
@@ -140,6 +142,14 @@ const VehiculoRoutes = (prop, mode) => [
     name: prop + '.vehiculos',
     meta: { dark: mode, auth: true, name: 'vehiculos' },
     component: VehiculoList
+  }
+]
+const TareaRoutes = (prop, mode) => [
+  {
+    path: 'tarea',
+    name: prop + '.tareas',
+    meta: { dark: mode, auth: true, name: 'tareas' },
+    component: TareasList
   }
 ]
 
@@ -472,6 +482,13 @@ const routes = [
     component: Layout1,
     meta: { auth: true },
     children: AlumnoRoutes('alumno')
+  },
+  {
+    path: '/tarea',
+    name: 'tarea',
+    component: Layout1,
+    meta: { auth: true },
+    children: TareaRoutes('tarea')
   },
   {
     path: '/vehiculo',
